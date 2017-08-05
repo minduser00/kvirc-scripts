@@ -68,14 +68,17 @@ alias(calculator){
 			%div=$new(button,$$)
 			%div->$setText("\/")
 			%l->$addWidget(%div,1,1)
+			objects.connect %div "clicked" $$ diviso
 	
 			%per=$new(button,$$)
 			%per->$setText("X")
 			%l->$addWidget(%per,1,2)
+			objects.connect %per "clicked" $$ per
 	
 			%meno=$new(button,$$)
 			%meno->$setText("\-")
 			%l->$addWidget(%meno,1,3)
+			objects.connect %meno "clicked" $$ meno
 	
 			%b7=$new(button,$$)
 			%b7->$setText("7")
@@ -140,6 +143,7 @@ alias(calculator){
 			%virgola=$new(button,$$)
 			%virgola->$setText("\,")
 			%l->$addWidget(%virgola,5,2)
+			objects.connect %virgola "clicked" $$ virgola
 	
 			%c=$new(button,$$)
 			%c->$setText("C")
@@ -154,30 +158,37 @@ alias(calculator){
 			%par_a=$new(button,$$)
 			%par_a->$setText("\(")
 			%l->$addWidget(%par_a,2,5)
+			objects.connect %par_a "clicked" $$ par_a
 	
 			%par_c=$new(button,$$)
 			%par_c->$setText("\)")
 			%l->$addWidget(%par_c,2,6)
+			objects.connect %par_c "clicked" $$ par_c
 	
 			%mr=$new(button,$$)
 			%mr->$setText("MR")
 			%l->$addWidget(%mr,3,5)
+			objects.connect %mr "clicked" $$ MR
 	
 			%ms=$new(button,$$)
 			%ms->$setText("MS")
 			%l->$addWidget(%ms,3,6)
+			objects.connect %ms "clicked" $$ MS
 	
 			%mpiu=$new(button,$$)
 			%mpiu->$setText("M\+")
 			%l->$addWidget(%mpiu,4,5)
+			objects.connect %mpiu "clicked" $$ MP
 	
 			%perc=$new(button,$$)
 			%perc->$setText("\%")
 			%l->$addWidget(%perc,4,6)
+			objects.connect %perc "clicked" $$ percent
 	
 			%mc=$new(button,$$)
 			%mc->$setText("MC")
 			%l->$addWidget(%mc,5,5)
+			objects.connect %mc "clicked" $$ MC
 	
 			%sign=$new(button,$$)
 			%sign->$setText("\+\/\-")
@@ -233,6 +244,12 @@ alias(calculator){
 			//This is currently broken
 			//%ris=$(eval $$->%op))
 			$$->%lcd->$displayStr(%ris)
+		}
+
+		percent(){
+			$$->%op=$$->%display\%;
+			$$->display=0;
+			$$->%lcd->$displayInt(0);
 		}
 	
 		C(){
