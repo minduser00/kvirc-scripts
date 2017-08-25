@@ -129,7 +129,7 @@ class(helltrixclone,object){
 			# Output for global scan
 			%cf=0
 			foreach(%i,$keys($$->%DbCloneNick)){
-				echo -w=%win -i=117 "  "$b$$->%DbCloneNick{%i} $o$tr("have same host",helltrix) $b$$->%DbHost[%i]
+				echo -w=%win -i=117 "  "$b$$->%DbCloneNick{%i} $b$tr("have same host",helltrix) $b$$->%DbHost[%i]
 				%cf++
 			}
 			if(!%cf)
@@ -138,7 +138,7 @@ class(helltrixclone,object){
 		} else {
 			# Output for nick scan
 			if($$->%DbCloneNick{%checkNick}){
-				echo -w=%win -i=117 $b$$->%DbCloneNick{%checkNick} $o$tr("have same host",helltrix) $b$$->%DbHost
+				echo -w=%win -i=117 $b$$->%DbCloneNick{%checkNick} $b$tr("have same host",helltrix) $b$$->%DbHost
 			} elseif (!$2) {
 				echo -w=%win -i=114 $tr("No clones found for",helltrix) $b%checkNick
 			}
@@ -164,14 +164,19 @@ alias(hell_clonescan)
 		# If we want a nick scan
 		%isHost=$1
 		if ($chan.ison(%isNick)){
-			if (!%isHost || (%isHost == $hostName(%isNick))){
+			if (!%isHost || (%isHost == $hostName(%isNick)) || !$insideAlias()){
+				if (%isHost != $hostName(%isNick)) {
+					# This only happens, in the case of a join and fast change to vhost
+					%isHost=$nothing
+				}
 				%clonescan->$cloneCheck(%isNick,%isHost)
 				%clonescan->$output(,%isNick,%isHost)
 			} else {
 				echo -w=$active $tr("Usage",helltrix): /hell_clonescan [nick]
 			}
 		} else {
-			echo -w=$active -i=114 $b%isNick $o$tr("is not in",helltrix) $b$target
+			if ($insideAlias())
+			echo -w=$active -i=114 $b%isNick $b$tr("is not in",helltrix) $b$target
 		}
 	}
 
