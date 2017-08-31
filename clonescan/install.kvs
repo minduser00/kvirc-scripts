@@ -1,7 +1,7 @@
 # Clone scanner script
 # Written by HelLViS69 (2005)
 
-addon.register("HellClonescan","1.1","HelL Clonescan",$tr("A simple script for scanning clones in channels"),"4.0.4")
+addon.register("HellClonescan","1.1.6","HelL Clonescan",$tr("A simple script for scanning clones in channels"),"4.0.4")
 {
 	# This is our uninstall callback: it will be called by KVIrc when addon.uninstall is invoked
 	popup.delitem -d -q channeltextview 696969
@@ -90,11 +90,11 @@ class(helltrixclone,object){
 			# Nick scan
 			if (!%checkHost){
 				%checkHost=$hostname(%checkNick)
-			}
-			if(!%checkHost){
-				# Just for sanity check
-				echo -w=$active [BUG]: $tr("The system could not retrieve the host of",helltrix) %checkNick
-				return
+				if(!%checkHost){
+					# Just for sanity check
+					echo -w=$active [BUG]: $tr("The system could not retrieve the host of",helltrix) %checkNick
+					return
+				}
 			}
 			$$->%DbCloneNick{%checkNick} = $chan.users(,"*!*@"%checkHost,)
 			if ($str.contains($$->%DbCloneNick{%checkNick}, ",")){
@@ -129,7 +129,7 @@ class(helltrixclone,object){
 			# Output for global scan
 			%cf=0
 			foreach(%i,$keys($$->%DbCloneNick)){
-				echo -w=%win -i=117 "  "$b$$->%DbCloneNick{%i} $o$tr("have same host",helltrix) $b$$->%DbHost[%i]
+				echo -w=%win -i=117 "  "$b$$->%DbCloneNick{%i} $b$tr("have same host",helltrix) $b$$->%DbHost[%i]
 				%cf++
 			}
 			if(!%cf)
@@ -138,7 +138,7 @@ class(helltrixclone,object){
 		} else {
 			# Output for nick scan
 			if($$->%DbCloneNick{%checkNick}){
-				echo -w=%win -i=117 $b$$->%DbCloneNick{%checkNick} $o$tr("have same host",helltrix) $b$$->%DbHost
+				echo -w=%win -i=117 $b$$->%DbCloneNick{%checkNick} $b$tr("have same host",helltrix) $b$$->%DbHost
 			} elseif (!$2) {
 				echo -w=%win -i=114 $tr("No clones found for",helltrix) $b%checkNick
 			}
@@ -163,15 +163,17 @@ alias(hell_clonescan)
 	} else {
 		# If we want a nick scan
 		%isHost=$1
-		if ($chan.ison(%isNick)){
-			if (!%isHost || (%isHost == $hostName(%isNick))){
-				%clonescan->$cloneCheck(%isNick,%isHost)
-				%clonescan->$output(,%isNick,%isHost)
-			} else {
-				echo -w=$active $tr("Usage",helltrix): /hell_clonescan [nick]
+		if (!$sw(j) && !$chan.ison(%isNick)){
+			echo -w=$active -i=114 $b%isNick $b$tr("is not in",helltrix) $b$target
+		} elseif (!%isHost || (%isHost == $hostName(%isNick)) || $sw(j)){
+			if ($sw(j) && (%isHost != $hostName(%isNick))){
+				# This only happens, in the case of a join and fast change to vhost
+				%isHost=$hostName(%isNick)
 			}
+			%clonescan->$cloneCheck(%isNick,%isHost)
+			%clonescan->$output(,%isNick,%isHost)
 		} else {
-			echo -w=$active -i=114 $b%isNick $o$tr("is not in",helltrix) $b$target
+			echo -w=$active $tr("Usage",helltrix): /hell_clonescan [nick]
 		}
 	}
 
@@ -184,7 +186,7 @@ alias(hell_clonescan)
 # Script Event
 event(OnJoin,clonescan)
 {
-	hell_clonescan $0 $2
+	hell_clonescan -j $0 $2
 }
 
 # Script Popups
@@ -198,3 +200,4 @@ defpopup-m ("channeltextview")
 		}
 	}
 }
+
