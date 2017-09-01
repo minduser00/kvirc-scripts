@@ -1,23 +1,29 @@
 # Clone scanner script
 # Written by HelLViS69 (2005)
+# TODO:
+# languaje files
 
-addon.register("HellClonescan","1.1.6","HelL Clonescan",$tr("A simple script for scanning clones in channels"),"4.0.4")
+addon.register("HellClonescan","1.1.7","HelL Clonescan",$tr("A simple script for scanning clones in channels",helltrix),"4.0.4")
 {
 	# This is our uninstall callback: it will be called by KVIrc when addon.uninstall is invoked
 	popup.delitem -d -q channeltextview 696969
 	event(OnJoin,clonescan){}
 	alias(hell_clonescan){}
+
 	# This is an automatically generated alias that will erase the installed files
 	if ($aliasBody(hell_clonescan_remove) != "")
 	{
 		hell_clonescan_remove
 		alias(hell_clonescan_remove){}
 	}
+
 	objects.killclass "helltrixclone"
+
 	foreach(%win,%HClone_win{}){
 		window.close -q %win;
 	}
 	%HClone_win{}=$nothing;
+
 	# Done
 	#echo -i=116 Bye 
 }
@@ -92,7 +98,7 @@ class(helltrixclone,object){
 				%checkHost=$hostname(%checkNick)
 				if(!%checkHost){
 					# Just for sanity check
-					echo -w=$active [BUG]: $tr("The system could not retrieve the host of",helltrix) %checkNick
+					echo -w=$active $tr("[BUG]: The system could not retrieve the host of",helltrix) %checkNick
 					return
 				}
 			}
@@ -178,9 +184,6 @@ alias(hell_clonescan)
 	}
 
 	delete %clonescan
-
-	# TODO:
-	# language files
 }
 
 # Script Event
@@ -200,4 +203,3 @@ defpopup-m ("channeltextview")
 		}
 	}
 }
-
