@@ -17,46 +17,46 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: install.kvs:6
+#: install.kvs:7
 msgid "A simple script for scanning clones in channels"
 msgstr ""
 
-#: install.kvs:102
+#: install.kvs:88
 msgid "[BUG]: The system could not retrieve the host of"
 msgstr ""
 
-#: install.kvs:118
+#: install.kvs:105
 msgid "Clones"
 msgstr ""
 
-#: install.kvs:122
+#: install.kvs:109
 msgid "Scanning for clones in"
 msgstr ""
 
-#: install.kvs:138 install.kvs:147
+#: install.kvs:125 install.kvs:134
 msgid "have same host"
 msgstr ""
 
-#: install.kvs:142
+#: install.kvs:129
 msgid "  No clones found on"
 msgstr ""
 
-#: install.kvs:143
+#: install.kvs:130
 msgid "Scan End"
 msgstr ""
 
-#: install.kvs:149
+#: install.kvs:136
 msgid "No clones found for"
 msgstr ""
 
-#: install.kvs:159
+#: install.kvs:146
 msgid "[Clonescan]: This is not a channel window"
 msgstr ""
 
-#: install.kvs:173
+#: install.kvs:160
 msgid "is not in"
 msgstr ""
 
-#: install.kvs:182
+#: install.kvs:169
 msgid "Usage"
 msgstr ""
