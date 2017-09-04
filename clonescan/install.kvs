@@ -1,9 +1,10 @@
 # Clone scanner script
 # Written by HelLViS69 (2005)
 # TODO:
-# languaje files
+# Languaje files
+# Help files
 
-addon.register("HellClonescan","1.2.7","HelL Clonescan",$tr("A simple script for scanning clones in channels",helltrix),"4.0.4",hell_clonescan.png)
+addon.register("HellClonescan","1.2.8","HelL Clonescan",$tr("A simple script for scanning clones in channels",helltrix),"4.0.4",hell_clonescan.png)
 {
 	# This is our uninstall callback: it will be called by KVIrc when addon.uninstall is invoked
 	popup.delitem -d -q channeltextview 696969
@@ -13,13 +14,6 @@ addon.register("HellClonescan","1.2.7","HelL Clonescan",$tr("A simple script for
 	objects.killclass "helltrixclone"
 
 	trunload "helltrix"
-
-	# This is an automatically generated alias that will erase the installed files
-	if ($aliasBody(hell_clonescan_remove) != "")
-	{
-		hell_clonescan_remove
-		alias(hell_clonescan_remove){}
-	}
 
 	foreach(%win,%HClone_win{}){
 		window.close -q %win;
@@ -35,27 +29,18 @@ addon.register("HellClonescan","1.2.7","HelL Clonescan",$tr("A simple script for
 # Get the path that this script was launched from
 %mypath = $file.extractPath($0)
 
-# get the installer helper class (this is pretty standard and included in the distro)
-parse %mypath/utils/installer.kvs
-
-# The installer will copy our files and generate automatically
-# an uninstallation alias for them
-%installer = $new(installer,0,myinstaller)
 # copy files in each subdirectory
 # the pics
-%installer->$copyFiles("%mypath/pics/","*.png",$file.localdir("pics"))
-# the translations
-%installer->$copyFiles("%mypath/locale/","*.mo",$file.localdir("locale"))
-# the documentation
-%installer->$copyFiles("%mypath/help/en/hellclonescan/","*.html",$file.localdir("help/en/hellclonescan"))
+if($file.exists(%mypath"/pics/"))
+	addon.installfiles -q -s "HellClonescan" "pics" %mypath"/pics/*.png"
 
-# then generate the uninstall alias, only if at least one file is copied
-if (%installer->%iNumFiles > 0)
-{
-	%installer->$generateUninstallAlias("hell_clonescan_remove")
-}
-# finally kill the installer helper
-delete %installer
+# the translations
+if($file.exists(%mypath"/locale/"))
+	addon.installfiles -q -s "HellClonescan" "locale" %mypath"/locale/*.mo"
+
+# the documentation
+if($file.exists(%mypath"/help/en/hellclonescan/"))
+	addon.installfiles -q -s "HellClonescan" "help/en/hellclonescan/" %mypath"/help/en/hellclonescan/*.html"
 
 # script Class
 class(helltrixclone,object){
