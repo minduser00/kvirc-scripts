@@ -329,6 +329,8 @@ class(hellcalc,dialog){
 			case("8");
 			case("9"): $$->$setDigit($0);
 				break;
+			case(",");
+			case("'");
 			case("."): $$->$virg();
 				break;
 			case("+"): $$->$piu();
