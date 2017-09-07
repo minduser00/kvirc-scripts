@@ -270,16 +270,17 @@ class(hellcalc,dialog){
 	ris(){
 		$$->%op=$str.append($$->%op,$$->%display)
 		echo -d $$->%op
+		$$->%op = $str.replace($$->%op,",",".")
 		eval "\%ris=\$($$->%op)"
 		$$->%lcd->$displayStr(%ris)
-		$$->%op="";
+		$$->%op=""
 		$$->%display=%ris
 		$$->%newNum=$false
 	}
 
 	C(){
 		$$->%display-=$$->%tmp
-		$$->%lcd->$displayStr(0);
+		$$->%lcd->$displayStr(0)
 		$$->%virgSet=$false
 	}
 
