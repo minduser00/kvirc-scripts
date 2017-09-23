@@ -7,7 +7,7 @@
 
 # register the script: this must be the first instruction executed
 # since it will abort with an error when a greater version is already installed
-addon.register("calculator","1.0.0",$tr("Calculator","calculator"),$tr("A simple calculator","calculator"),"3.2.0.99")
+addon.register("calculator","1.1.0",$tr("Calculator","calculator"),$tr("A simple calculator","calculator"),"4.0.0")
 {
 	# This is our uninstall callback: it will be called by KVIrc when addon.uninstall is invoked
 	
@@ -202,6 +202,8 @@ class(hellcalc,dialog){
 		$$->%display=0
 		$$->%virgSet=$false
 		$$->%newNum=$true
+		$$->%parCount=0
+		$$->%memory=0
 	}
 
 	setDigit($0){
@@ -213,6 +215,24 @@ class(hellcalc,dialog){
 		if(($str.left($$->%display,1)=="0") && !$str.equal($str.left($$->%display,2),"0."))
 			$$->%display=$str.rightfromfirst($$->%display,"0")
 		$$->%lcd->$displayStr($$->%display)
+	}
+
+	setOperator($0){
+		echo -d [setOperator]: $0;
+		$$->%op.=$$->%display$0;
+		$$->%virgSet=$false
+		$$->%newNum=$false
+	}
+
+	setPar($0){
+		echo -d [setPar]: $0;
+		if($$->%newNum)
+			$$->%op.=$$->%display$0;
+		else
+			$$->%op.=$0;
+		$$->%display=""
+		$$->%virgSet=$false
+		$$->%newNum=$false
 	}
 
 	displayToZero(){
@@ -233,61 +253,63 @@ class(hellcalc,dialog){
 	digit9(){ $$->$setDigit(9); }
 
 	virg(){
-		#only one . per value
+		#only one '.' per value
 		if(!$$->%virgSet){
+			if(!$$->%newNum){
+				$$->$displayToZero()
+				$$->%newNum=$true
+			}
 			$$->$setDigit(.);
 			$$->%virgSet=$true
 		}
 	}
 	
 	piu(){
-		$$->%op.=$$->%display\+;
-		$$->%newNum=$false
+		$$->$setOperator(+);
 	}
+
 	meno(){
-		$$->%op.=$$->%display\-;
-		$$->%newNum=$false
+		$$->$setOperator(-);
 	}
 	per(){
-		$$->%op.=$$->%display\*;
-		$$->%newNum=$false
+		$$->$setOperator(*);
 	}
 	diviso(){
-		$$->%op.=$$->%display\/;
-		$$->%newNum=$false
+		$$->$setOperator(/);
 	}
 	
 	percent(){
-		$$->%op.=$$->%display\%;
-		$$->%newNum=$false
+		$$->$setOperator(%);
 	}
 
 	e(){
-		$$->%op.=$$->%display\* 10\^;
-		$$->%newNum=$false
+		$$->$setOperator(\* 10\^);
 	}
 	
 	ris(){
-		$$->%op=$str.append($$->%op,$$->%display)
-		echo -d $$->%op
+		$$->%op.=$$->%display
+		$$->%newNum=$false
 		$$->%op = $str.replace($$->%op,",",".")
-		eval "\%ris=\$($$->%op)"
+		while ($$->%parCount>0){
+			$$->$parc()
+		}
+		echo -d $$->%op
+		eval -q -f "\%ris=\$($$->%op)"
 		$$->%lcd->$displayStr(%ris)
+		//if ($$->%lcd->$checkOverflow()) {}
 		$$->%op=""
 		$$->%display=%ris
-		$$->%newNum=$false
 	}
 
 	C(){
-		$$->%display-=$$->%tmp
-		$$->%lcd->$displayStr(0)
-		$$->%virgSet=$false
+		$$->$displayToZero()
+		$$->%newNum=$true
 	}
 
 	AC(){
-		$$->%display=0
-		$$->%lcd->$displayStr($$->%display)
-		$$->%virgSet=$false
+		$$->%op=""
+		$$->$displayToZero()
+		$$->%newNum=$true
 	}
 
 	sign(){
@@ -296,21 +318,35 @@ class(hellcalc,dialog){
 	}
 	
 	para(){
+		$$->$setPar(\();
+		$$->%parCount++
 	}
 	
 	parc(){
+		if($$->%parCount > 0){
+			$$->$setPar(\));
+			$$->%parCount--
+		}
 	}
 	
 	MR(){
+		$$->%display=$$->%memory
+		$$->%lcd->$displayStr($$->%display)
+		$$->%newNum=$false
+		
 	}
 	
 	MS(){
+		$$->%memory=$$->%display
 	}
 	
 	MP(){
+		$$->%memory+=$$->%display
+		$$->%newNum=$false
 	}
 	
 	MC(){
+		$$->%memory=0
 	}
 	
 
@@ -341,6 +377,7 @@ class(hellcalc,dialog){
 				break;
 			case("/"): $$->$diviso();
 				break;
+			case("=");
 			case("Return");
 			case("Enter"): $$->$ris();
 				break;
@@ -369,4 +406,3 @@ alias(calculator){
 
 # Done: the addon is installed and running: enjoy :)
 # HelLViS69 25.09.2005
-
