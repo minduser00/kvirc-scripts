@@ -4,7 +4,7 @@
 # Languaje files
 # Help files
 
-addon.register("HellClonescan","1.2.8","HelL Clonescan",$tr("A simple script for scanning clones in channels",helltrix),"4.0.4",hell_clonescan.png)
+addon.register("HellClonescan","1.2.9","HelL Clonescan",$tr("A simple script for scanning clones in channels",helltrix),"4.0.4",hell_clonescan.png)
 {
 	# This is our uninstall callback: it will be called by KVIrc when addon.uninstall is invoked
 	popup.delitem -d -q channeltextview 696969
@@ -51,7 +51,7 @@ class(helltrixclone,object){
 		%checkNick=$0
 		%checkHost=$1
 
-		if(!%checkNick){
+		if(%checkNick == ""){
 			# Global scan
 			%i=0
 			# Channel mask array in the form nick!ident@host
@@ -118,7 +118,7 @@ class(helltrixclone,object){
 		}
 		%checkNick=$1
 		
-		if(!%checkNick){
+		if(%checkNick == ""){
 			# Output for global scan
 			%cf=0
 			foreach(%i,$keys($$->%DbCloneNick)){
@@ -149,7 +149,7 @@ alias(hell_clonescan)
 	%isNick=$0
 	%clonescan=$new(helltrixclone)
 	
-	if(!%isNick){
+	if(%isNick == ""){
 		%clonescan->$cloneCheck()
 		%win=%clonescan->$createWin()
 		%clonescan->$output(%win,)
