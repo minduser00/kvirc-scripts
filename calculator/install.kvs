@@ -138,6 +138,7 @@ class(hellcalc,dialog){
 		%ris->$setText("\n\=\n\n")
 		%l->$addMultiCellWidget(%ris,4,5,3,3)
 		objects.connect %ris "clicked" $$ ris
+		objects.connect $$ returnPressed $$ ris
 
 		%b0=$new(button,$$)
 		%b0->$setText("0")
